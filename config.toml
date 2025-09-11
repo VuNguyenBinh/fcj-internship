@@ -1,4 +1,5 @@
-baseURL = "https://thienluhoan.github.io/workshop-template/"
+baseURL = "hhttps://github.com/VuNguyenBinh/aws-intern-report"
+publishDir="public"
 relativeURLs = true
 canonifyURLs = true
 
