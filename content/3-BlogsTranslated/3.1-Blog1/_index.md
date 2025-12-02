@@ -1,124 +1,98 @@
 ---
 title: "Blog 1"
-
 weight: 1
 chapter: false
 pre: " <b> 3.1. </b> "
 ---
 
+# Understanding the UK Critical Third Parties (CTPs) Regime: What Customers Need to Know
 
-# Getting Started with Healthcare Data Lakes: Using Microservices
+On November 12, 2024, the UK financial services regulators — the Bank of England (BoE), the Prudential Regulation Authority (PRA), and the Financial Conduct Authority (FCA) — published the final documents for the UK Critical Third Parties (CTPs) regime. These documents clarify how the regime will be implemented and expand regulatory oversight to specific services that designated CTPs provide to the UK financial sector.
 
-Data lakes can help hospitals and healthcare facilities turn data into business insights, maintain business continuity, and protect patient privacy. A **data lake** is a centralized, managed, and secure repository to store all your data, both in its raw and processed forms for analysis. Data lakes allow you to break down data silos and combine different types of analytics to gain insights and make better business decisions.
-
-This blog post is part of a larger series on getting started with setting up a healthcare data lake. In my final post of the series, *“Getting Started with Healthcare Data Lakes: Diving into Amazon Cognito”*, I focused on the specifics of using Amazon Cognito and Attribute Based Access Control (ABAC) to authenticate and authorize users in the healthcare data lake solution. In this blog, I detail how the solution evolved at a foundational level, including the design decisions I made and the additional features used. You can access the code samples for the solution in this Git repo for reference.
-
----
-
-## Architecture Guidance
-
-The main change since the last presentation of the overall architecture is the decomposition of a single service into a set of smaller services to improve maintainability and flexibility. Integrating a large volume of diverse healthcare data often requires specialized connectors for each format; by keeping them encapsulated separately as microservices, we can add, remove, and modify each connector without affecting the others. The microservices are loosely coupled via publish/subscribe messaging centered in what I call the “pub/sub hub.”
-
-This solution represents what I would consider another reasonable sprint iteration from my last post. The scope is still limited to the ingestion and basic parsing of **HL7v2 messages** formatted in **Encoding Rules 7 (ER7)** through a REST interface.
-
-**The solution architecture is now as follows:**
-
-> *Figure 1. Overall architecture; colored boxes represent distinct services.*
+AWS is preparing to comply with this regime, assuming it will be designated as a CTP.
 
 ---
 
-While the term *microservices* has some inherent ambiguity, certain traits are common:  
-- Small, autonomous, loosely coupled  
-- Reusable, communicating through well-defined interfaces  
-- Specialized to do one thing well  
-- Often implemented in an **event-driven architecture**
+## Key Regulatory Changes
 
-When determining where to draw boundaries between microservices, consider:  
-- **Intrinsic**: technology used, performance, reliability, scalability  
-- **Extrinsic**: dependent functionality, rate of change, reusability  
-- **Human**: team ownership, managing *cognitive load*
+Two core documents define the regime:
+
+- **Supervisory Statement (SS) 6/24**
+- **Critical Third Parties Instrument**
+
+The Instrument sets the **mandatory requirements** for designated CTPs, while SS6/24 provides **guidance on interpreting and implementing** those requirements. Together, they form the operational foundation for the new supervisory approach.
 
 ---
 
-## Technology Choices and Communication Scope
+## What the Regime Introduces
 
-| Communication scope                       | Technologies / patterns to consider                                                        |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Within a single microservice              | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Between microservices in a single service | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Between services                          | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
+One of the most significant updates is the introduction of **Systemic Third-Party Services (STPS)** — services whose disruption could threaten the stability or confidence of the UK financial system.
 
----
+Designated CTPs must meet detailed requirements for STPS, including:
 
-## The Pub/Sub Hub
+- Conducting **scenario testing**  
+- Running **incident management playbook exercises**  
+- Sharing relevant information with regulators  
 
-Using a **hub-and-spoke** architecture (or message broker) works well with a small number of tightly related microservices.  
-- Each microservice depends only on the *hub*  
-- Inter-microservice connections are limited to the contents of the published message  
-- Reduces the number of synchronous calls since pub/sub is a one-way asynchronous *push*
+The regime becomes effective **1 January 2025**, but will only apply after a provider is formally designated. The designation process will take at least six months, with the first designations expected around **mid-2025**.
 
-Drawback: **coordination and monitoring** are needed to avoid microservices processing the wrong message.
+Once designated, a CTP has **three months** to submit its first **self-assessment report** on STPS compliance.
+
+The regulatory approach is aligned with **international standards** and ensures interoperability with other jurisdictions.
 
 ---
 
-## Core Microservice
+## Overall Objective of the Regime
 
-Provides foundational data and communication layer, including:  
-- **Amazon S3** bucket for data  
-- **Amazon DynamoDB** for data catalog  
-- **AWS Lambda** to write messages into the data lake and catalog  
-- **Amazon SNS** topic as the *hub*  
-- **Amazon S3** bucket for artifacts such as Lambda code
+The regime aims to address **systemic third-party concentration risk** — the risk that a small number of external providers supply critical services to many financial institutions.  
 
-> Only allow indirect write access to the data lake through a Lambda function → ensures consistency.
+It builds on existing expectations set out in:
 
----
+- SS1/21  
+- SS2/21  
+- The *Operational Resilience* policy statement  
 
-## Front Door Microservice
-
-- Provides an API Gateway for external REST interaction  
-- Authentication & authorization based on **OIDC** via **Amazon Cognito**  
-- Self-managed *deduplication* mechanism using DynamoDB instead of SNS FIFO because:  
-  1. SNS deduplication TTL is only 5 minutes  
-  2. SNS FIFO requires SQS FIFO  
-  3. Ability to proactively notify the sender that the message is a duplicate  
+These documents shape how financial institutions manage outsourcing, third-party risk, and impact tolerances for important business services.
 
 ---
 
-## Staging ER7 Microservice
+## AWS Commitment
 
-- Lambda “trigger” subscribed to the pub/sub hub, filtering messages by attribute  
-- Step Functions Express Workflow to convert ER7 → JSON  
-- Two Lambdas:  
-  1. Fix ER7 formatting (newline, carriage return)  
-  2. Parsing logic  
-- Result or error is pushed back into the pub/sub hub  
+This outcomes-based regime provides CTPs with flexibility in how they demonstrate compliance. It **does not increase the regulatory burden on financial institutions**, but supports a stronger, more resilient UK financial system.
+
+AWS fully supports the regulators’ objectives and values the continued engagement throughout this process. We are committed to:
+
+- Meeting all regulatory requirements  
+- Helping customers understand AWS’s approach to the CTP regime  
+- Supporting customers in improving their **operational resilience**  
 
 ---
 
-## New Features in the Solution
+## Impact on Customers
 
-### 1. AWS CloudFormation Cross-Stack References
-Example *outputs* in the core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn
+Regulators have clarified that the regime **does not remove or reduce the responsibilities** of financial institutions, their boards, or senior management.  
+
+Importantly, it **does not impose new obligations directly on AWS customers**.
+
+However, customers should expect to:
+
+- Provide accurate information about their third-party dependencies  
+- Review and update their risk management and due-diligence processes  
+- Leverage new information shared by CTPs under the regime  
+
+AWS already provides a wide range of services that support effective **incident management**, across both cloud-native and hybrid environments.  
+Guidance on incident management is also available in the **AWS Well-Architected Framework**.
+
+If you have questions about the regime or operational resilience practices — including incident management — contact your AWS account team.
+
+---
+
+## About the Authors
+
+### **Michael Jefferson**
+Michael Jefferson is the Head of Public Policy for Financial Services at AWS, covering the UK, Middle East, Africa, and Switzerland. He co-leads AWS's engagement with the **Financial Stability Board (FSB)**. His background spans technology, industry associations, investment banking, and the UK public sector.
+
+### **Arvind Kannan**
+Arvind Kannan is a Principal Compliance Specialist at AWS based in London. He works closely with financial services customers across EMEA, focusing on governance, risk, compliance, and operational resilience, helping them navigate increasingly complex regulatory expectations.
+
+---

@@ -6,120 +6,138 @@ chapter: false
 pre: " <b> 3.3. </b> "
 ---
 
+## Giới thiệu
 
-
-# Bắt đầu với healthcare data lakes: Sử dụng microservices
-
-Các data lake có thể giúp các bệnh viện và cơ sở y tế chuyển dữ liệu thành những thông tin chi tiết về doanh nghiệp và duy trì hoạt động kinh doanh liên tục, đồng thời bảo vệ quyền riêng tư của bệnh nhân. **Data lake** là một kho lưu trữ tập trung, được quản lý và bảo mật để lưu trữ tất cả dữ liệu của bạn, cả ở dạng ban đầu và đã xử lý để phân tích. data lake cho phép bạn chia nhỏ các kho chứa dữ liệu và kết hợp các loại phân tích khác nhau để có được thông tin chi tiết và đưa ra các quyết định kinh doanh tốt hơn.
-
-Bài đăng trên blog này là một phần của loạt bài lớn hơn về việc bắt đầu cài đặt data lake dành cho lĩnh vực y tế. Trong bài đăng blog cuối cùng của tôi trong loạt bài, *“Bắt đầu với data lake dành cho lĩnh vực y tế: Đào sâu vào Amazon Cognito”*, tôi tập trung vào các chi tiết cụ thể của việc sử dụng Amazon Cognito và Attribute Based Access Control (ABAC) để xác thực và ủy quyền người dùng trong giải pháp data lake y tế. Trong blog này, tôi trình bày chi tiết cách giải pháp đã phát triển ở cấp độ cơ bản, bao gồm các quyết định thiết kế mà tôi đã đưa ra và các tính năng bổ sung được sử dụng. Bạn có thể truy cập các code samples cho giải pháp tại Git repo này để tham khảo.
+Tương lai của Internet of Things (IoT) luôn là chủ đề được thảo luận sôi nổi, liên quan đến hyperscaler, nhà cung cấp giải pháp và khách hàng doanh nghiệp. Để làm rõ bức tranh toàn cảnh, chúng ta cùng tìm hiểu góc nhìn của **Yasser Alsaied**, Phó Chủ tịch phụ trách IoT tại AWS, về chiến lược, tầm nhìn và sự phát triển trong hệ sinh thái IoT.
 
 ---
 
-## Hướng dẫn kiến trúc
+## Vai trò và kinh nghiệm của Yasser tại AWS
 
-Thay đổi chính kể từ lần trình bày cuối cùng của kiến trúc tổng thể là việc tách dịch vụ đơn lẻ thành một tập hợp các dịch vụ nhỏ để cải thiện khả năng bảo trì và tính linh hoạt. Việc tích hợp một lượng lớn dữ liệu y tế khác nhau thường yêu cầu các trình kết nối chuyên biệt cho từng định dạng; bằng cách giữ chúng được đóng gói riêng biệt với microservices, chúng ta có thể thêm, xóa và sửa đổi từng trình kết nối mà không ảnh hưởng đến những kết nối khác. Các microservices được kết nối rời thông qua tin nhắn publish/subscribe tập trung trong cái mà tôi gọi là “pub/sub hub”.
+Yasser có **32 năm kinh nghiệm** trong ngành công nghệ và IoT.  
+Gia nhập AWS năm 2021, ông phụ trách toàn bộ khối IoT gồm:
 
-Giải pháp này đại diện cho những gì tôi sẽ coi là một lần lặp nước rút hợp lý khác từ last post của tôi. Phạm vi vẫn được giới hạn trong việc nhập và phân tích cú pháp đơn giản của các **HL7v2 messages** được định dạng theo **Quy tắc mã hóa 7 (ER7)** thông qua giao diện REST.
+- Robotics  
+- Industrial  
+- Automotive  
+- Consumer  
+- Public Sector  
+- Commercial  
 
-**Kiến trúc giải pháp bây giờ như sau:**
+Các dịch vụ IoT của AWS hiện nằm trong nhóm giải pháp được kết nối rộng nhất trên toàn cầu, hỗ trợ digital twins, smart cities và connected vehicles.
 
-> *Hình 1. Kiến trúc tổng thể; những ô màu thể hiện những dịch vụ riêng biệt.*
-
----
-
-Mặc dù thuật ngữ *microservices* có một số sự mơ hồ cố hữu, một số đặc điểm là chung:  
-- Chúng nhỏ, tự chủ, kết hợp rời rạc  
-- Có thể tái sử dụng, giao tiếp thông qua giao diện được xác định rõ  
-- Chuyên biệt để giải quyết một việc  
-- Thường được triển khai trong **event-driven architecture**
-
-Khi xác định vị trí tạo ranh giới giữa các microservices, cần cân nhắc:  
-- **Nội tại**: công nghệ được sử dụng, hiệu suất, độ tin cậy, khả năng mở rộng  
-- **Bên ngoài**: chức năng phụ thuộc, tần suất thay đổi, khả năng tái sử dụng  
-- **Con người**: quyền sở hữu nhóm, quản lý *cognitive load*
+Trước đó, Yasser là VP IoT tại Qualcomm, dẫn dắt phát triển AI, computer vision, drones, robotics và 5G trong hệ sinh thái chipset IoT.
 
 ---
 
-## Lựa chọn công nghệ và phạm vi giao tiếp
+## Sự thay đổi của ngành IoT và ý nghĩa với khách hàng
 
-| Phạm vi giao tiếp                        | Các công nghệ / mô hình cần xem xét                                                        |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Trong một microservice                   | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Giữa các microservices trong một dịch vụ | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Giữa các dịch vụ                         | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
+Theo Yasser, IoT tiếp tục tăng trưởng mạnh, nhưng vai trò của các hyperscaler đang chuyển từ **giải pháp ngang (horizontal)** sang **giải pháp theo ngành dọc (vertical)**.
 
----
+> “Khách hàng không đến để xin IoT — họ đến để đạt kết quả kinh doanh.”
 
-## The pub/sub hub
-
-Việc sử dụng kiến trúc **hub-and-spoke** (hay message broker) hoạt động tốt với một số lượng nhỏ các microservices liên quan chặt chẽ.  
-- Mỗi microservice chỉ phụ thuộc vào *hub*  
-- Kết nối giữa các microservice chỉ giới hạn ở nội dung của message được xuất  
-- Giảm số lượng synchronous calls vì pub/sub là *push* không đồng bộ một chiều
-
-Nhược điểm: cần **phối hợp và giám sát** để tránh microservice xử lý nhầm message.
+Điều này buộc các nhà cung cấp dịch vụ đám mây phải đặt IoT trong bối cảnh từng ngành, với những thách thức và nhu cầu rất khác nhau.
 
 ---
 
-## Core microservice
+## Chiến lược IoT của AWS: Lấy ngành làm trung tâm
 
-Cung cấp dữ liệu nền tảng và lớp truyền thông, gồm:  
-- **Amazon S3** bucket cho dữ liệu  
-- **Amazon DynamoDB** cho danh mục dữ liệu  
-- **AWS Lambda** để ghi message vào data lake và danh mục  
-- **Amazon SNS** topic làm *hub*  
-- **Amazon S3** bucket cho artifacts như mã Lambda
+AWS xem chiến lược theo ngành là **“ngôi sao Bắc Đẩu”**. Điều này thể hiện qua:
 
-> Chỉ cho phép truy cập ghi gián tiếp vào data lake qua hàm Lambda → đảm bảo nhất quán.
+- **AWS IoT SiteWise / TwinMaker** → Industrial IoT  
+- **AWS IoT FleetWise** → Automotive  
+- **Hợp tác với các đối tác công nghệ theo ngành**  
 
----
-
-## Front door microservice
-
-- Cung cấp API Gateway để tương tác REST bên ngoài  
-- Xác thực & ủy quyền dựa trên **OIDC** thông qua **Amazon Cognito**  
-- Cơ chế *deduplication* tự quản lý bằng DynamoDB thay vì SNS FIFO vì:
-  1. SNS deduplication TTL chỉ 5 phút
-  2. SNS FIFO yêu cầu SQS FIFO
-  3. Chủ động báo cho sender biết message là bản sao
+AWS tái cấu trúc sản phẩm và hỗ trợ để phù hợp với từng vertical nhằm tối ưu hoá trải nghiệm khách hàng.
 
 ---
 
-## Staging ER7 microservice
+## Tầm quan trọng của giải pháp theo ngành dọc
 
-- Lambda “trigger” đăng ký với pub/sub hub, lọc message theo attribute  
-- Step Functions Express Workflow để chuyển ER7 → JSON  
-- Hai Lambda:
-  1. Sửa format ER7 (newline, carriage return)
-  2. Parsing logic  
-- Kết quả hoặc lỗi được đẩy lại vào pub/sub hub
+Khách hàng IoT thường gặp khó khăn trong giai đoạn:
+
+- Từ PoC → sản xuất  
+- Mở rộng quy mô  
+- Tích hợp hệ thống  
+
+AWS giải quyết bằng:
+
+- **AWS & Partner Solutions** có mã mẫu, kiến trúc mẫu  
+- **ISV** cung cấp phần mềm dựng sẵn  
+- **SI** đảm nhiệm tích hợp và tùy chỉnh  
+
+Tất cả đều nhằm giúp khách hàng triển khai nhanh, dễ mở rộng và tiết kiệm chi phí.
 
 ---
 
-## Tính năng mới trong giải pháp
+## AWS đang đầu tư lớn vào đâu?
 
-### 1. AWS CloudFormation cross-stack references
-Ví dụ *outputs* trong core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn
+Trong 2 năm qua, AWS đã tung ra hàng loạt dịch vụ IoT mới:
+
+- **AWS IoT FleetWise**  
+- **AWS IoT ExpressLink**  
+- **AWS IoT TwinMaker**  
+- **AWS IoT Core for Amazon Sidewalk**  
+- Hơn **50 tính năng IoT mới**  
+- **Giảm giá dịch vụ IoT**  
+
+Kho thiết bị tương thích IoT đã vượt **800 partner devices**.
+
+AWS tiếp tục tập trung vào:
+
+### 🌐 1. Điện toán biên (Edge Computing)
+
+- AWS IoT SiteWise Edge  
+- AWS IoT Greengrass  
+- Xử lý dữ liệu tại chỗ, độ trễ thấp  
+- Ứng dụng tại nhà máy, tower 5G, trung tâm dữ liệu on-prem  
+
+### 🔄 2. Điện toán đám mây lai (Hybrid Cloud)
+
+- Mở rộng API, công cụ và hạ tầng tới các địa điểm biên  
+- Giúp chuyển đổi CapEx → OpEx  
+
+---
+
+## Tại sao IoT lại quan trọng đối với chính Amazon?
+
+Amazon sử dụng AWS IoT trong hầu hết lĩnh vực vận hành cốt lõi:
+
+### 🚚 Logistics & Fulfillment
+
+- 300+ cơ sở vận hành  
+- 750.000+ robot tự hành  
+- 1.6 triệu kiện hàng/ngày  
+
+### 🛻 Tối ưu đội xe tải
+
+Sử dụng **Kinesis Video Streams** để tự động check-in bến xe.  
+➡ Giúp **tiết kiệm 775.000 giờ** cho tài xế trong năm 2022.
+
+### 📦 Amazon Flex
+
+- Điều phối giao hàng  
+- Xử lý **22.000 giao dịch/giây**
+
+### 🛒 Just Walk Out
+
+- Mua hàng không cần quầy thanh toán  
+- Sử dụng camera + computer vision chạy trên AWS  
+
+IoT vừa là công cụ vận hành vừa là động lực đổi mới của Amazon.
+
+---
+
+## Kết luận
+
+Từ góc nhìn của Yasser, một điều rõ ràng:  
+**IoT không chỉ là thiết bị — nó là nền tảng tạo ra dữ liệu, kết nối, và giá trị kinh doanh.**
+
+AWS tiếp tục đầu tư sâu vào:
+
+- Giải pháp theo ngành  
+- Edge & hybrid cloud  
+- Trải nghiệm khách hàng  
+- Hệ sinh thái đối tác IoT  
+
+IoT sẽ là trụ cột trung tâm trong hành trình số hóa toàn cầu, từ smart factory đến connected vehicles và thương mại hiện đại.

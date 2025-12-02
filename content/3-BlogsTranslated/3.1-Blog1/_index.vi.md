@@ -1,124 +1,107 @@
 ---
 title: "Blog 1"
-
 weight: 1
 chapter: false
 pre: " <b> 3.1. </b> "
 ---
 
+# Những điều khách hàng cần biết về chế độ quản lý các bên thứ ba quan trọng (Critical Third Parties – CTPs) tại Vương quốc Anh
 
-# Bắt đầu với healthcare data lakes: Sử dụng microservices
+Ngày 12 tháng 11 năm 2024, các cơ quan quản lý dịch vụ tài chính của Vương quốc Anh — gồm Ngân hàng Trung ương Anh (BoE), Cơ quan Quản lý Thận trọng (PRA) và Cơ quan Quản lý Tài chính (FCA) — đã công bố bộ tài liệu hoàn chỉnh về **chế độ quản lý các bên thứ ba quan trọng (CTPs)** dành cho ngành tài chính Anh.  
 
-Các data lake có thể giúp các bệnh viện và cơ sở y tế chuyển dữ liệu thành những thông tin chi tiết về doanh nghiệp và duy trì hoạt động kinh doanh liên tục, đồng thời bảo vệ quyền riêng tư của bệnh nhân. **Data lake** là một kho lưu trữ tập trung, được quản lý và bảo mật để lưu trữ tất cả dữ liệu của bạn, cả ở dạng ban đầu và đã xử lý để phân tích. data lake cho phép bạn chia nhỏ các kho chứa dữ liệu và kết hợp các loại phân tích khác nhau để có được thông tin chi tiết và đưa ra các quyết định kinh doanh tốt hơn.
-
-Bài đăng trên blog này là một phần của loạt bài lớn hơn về việc bắt đầu cài đặt data lake dành cho lĩnh vực y tế. Trong bài đăng blog cuối cùng của tôi trong loạt bài, *“Bắt đầu với data lake dành cho lĩnh vực y tế: Đào sâu vào Amazon Cognito”*, tôi tập trung vào các chi tiết cụ thể của việc sử dụng Amazon Cognito và Attribute Based Access Control (ABAC) để xác thực và ủy quyền người dùng trong giải pháp data lake y tế. Trong blog này, tôi trình bày chi tiết cách giải pháp đã phát triển ở cấp độ cơ bản, bao gồm các quyết định thiết kế mà tôi đã đưa ra và các tính năng bổ sung được sử dụng. Bạn có thể truy cập các code samples cho giải pháp tại Git repo này để tham khảo.
-
----
-
-## Hướng dẫn kiến trúc
-
-Thay đổi chính kể từ lần trình bày cuối cùng của kiến trúc tổng thể là việc tách dịch vụ đơn lẻ thành một tập hợp các dịch vụ nhỏ để cải thiện khả năng bảo trì và tính linh hoạt. Việc tích hợp một lượng lớn dữ liệu y tế khác nhau thường yêu cầu các trình kết nối chuyên biệt cho từng định dạng; bằng cách giữ chúng được đóng gói riêng biệt với microservices, chúng ta có thể thêm, xóa và sửa đổi từng trình kết nối mà không ảnh hưởng đến những kết nối khác. Các microservices được kết nối rời thông qua tin nhắn publish/subscribe tập trung trong cái mà tôi gọi là “pub/sub hub”.
-
-Giải pháp này đại diện cho những gì tôi sẽ coi là một lần lặp nước rút hợp lý khác từ last post của tôi. Phạm vi vẫn được giới hạn trong việc nhập và phân tích cú pháp đơn giản của các **HL7v2 messages** được định dạng theo **Quy tắc mã hóa 7 (ER7)** thông qua giao diện REST.
-
-**Kiến trúc giải pháp bây giờ như sau:**
-
-> *Hình 1. Kiến trúc tổng thể; những ô màu thể hiện những dịch vụ riêng biệt.*
+Những tài liệu này làm rõ phương pháp tiếp cận, trách nhiệm và các yêu cầu quản lý áp dụng cho các dịch vụ bên thứ ba có ảnh hưởng lớn đến hệ thống tài chính Anh. AWS đang chuẩn bị tuân thủ chế độ này, với giả định rằng AWS sẽ được cơ quan quản lý chỉ định là một CTP.
 
 ---
 
-Mặc dù thuật ngữ *microservices* có một số sự mơ hồ cố hữu, một số đặc điểm là chung:  
-- Chúng nhỏ, tự chủ, kết hợp rời rạc  
-- Có thể tái sử dụng, giao tiếp thông qua giao diện được xác định rõ  
-- Chuyên biệt để giải quyết một việc  
-- Thường được triển khai trong **event-driven architecture**
+## Những thay đổi chính trong quy định
 
-Khi xác định vị trí tạo ranh giới giữa các microservices, cần cân nhắc:  
-- **Nội tại**: công nghệ được sử dụng, hiệu suất, độ tin cậy, khả năng mở rộng  
-- **Bên ngoài**: chức năng phụ thuộc, tần suất thay đổi, khả năng tái sử dụng  
-- **Con người**: quyền sở hữu nhóm, quản lý *cognitive load*
+Hai tài liệu trung tâm của chế độ bao gồm:
 
----
+- **Supervisory Statement (SS) 6/24**  
+  → Hướng dẫn cách diễn giải và triển khai các yêu cầu đối với CTP.
 
-## Lựa chọn công nghệ và phạm vi giao tiếp
+- **Critical Third Parties Instrument**  
+  → Xác định các yêu cầu bắt buộc mà các CTP được chỉ định phải thực thi.
 
-| Phạm vi giao tiếp                        | Các công nghệ / mô hình cần xem xét                                                        |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Trong một microservice                   | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Giữa các microservices trong một dịch vụ | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Giữa các dịch vụ                         | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
+Các quy định mới cũng giới thiệu khái niệm **Systemic Third-Party Services (STPS)** — “Dịch vụ Bên thứ ba có tính Hệ thống”. Đây là các dịch vụ mà nếu bị gián đoạn có thể đe dọa sự ổn định của hệ thống tài chính Anh.
 
----
+Các CTP phải tuân thủ các yêu cầu chi tiết cho STPS, bao gồm:
 
-## The pub/sub hub
+- Kiểm thử kịch bản (scenario testing)  
+- Triển khai và vận hành playbook quản lý sự cố  
+- Chia sẻ thông tin bắt buộc với cơ quan quản lý  
 
-Việc sử dụng kiến trúc **hub-and-spoke** (hay message broker) hoạt động tốt với một số lượng nhỏ các microservices liên quan chặt chẽ.  
-- Mỗi microservice chỉ phụ thuộc vào *hub*  
-- Kết nối giữa các microservice chỉ giới hạn ở nội dung của message được xuất  
-- Giảm số lượng synchronous calls vì pub/sub là *push* không đồng bộ một chiều
+Chế độ có hiệu lực từ **1/1/2025**, nhưng chỉ áp dụng sau khi quá trình xác định CTP hoàn tất (dự kiến giữa năm 2025). Sau khi được chỉ định, CTP có **3 tháng** để nộp báo cáo tự đánh giá đầu tiên.
 
-Nhược điểm: cần **phối hợp và giám sát** để tránh microservice xử lý nhầm message.
+Chế độ được xây dựng để tương thích với các tiêu chuẩn quốc tế và đảm bảo khả năng tương tác quy định giữa các khu vực pháp lý.
 
 ---
 
-## Core microservice
+## Mục tiêu tổng thể
 
-Cung cấp dữ liệu nền tảng và lớp truyền thông, gồm:  
-- **Amazon S3** bucket cho dữ liệu  
-- **Amazon DynamoDB** cho danh mục dữ liệu  
-- **AWS Lambda** để ghi message vào data lake và danh mục  
-- **Amazon SNS** topic làm *hub*  
-- **Amazon S3** bucket cho artifacts như mã Lambda
+Mục tiêu của chế độ CTP là giảm thiểu **rủi ro tập trung bên thứ ba có tính hệ thống** (systemic third-party concentration risk) — rủi ro phát sinh khi ngành tài chính phụ thuộc vào một số ít nhà cung cấp dịch vụ quan trọng.
 
-> Chỉ cho phép truy cập ghi gián tiếp vào data lake qua hàm Lambda → đảm bảo nhất quán.
+Chế độ này mở rộng và kế thừa các nguyên tắc từ:
 
----
+- SS1/21  
+- SS2/21  
+- Chính sách “Operational Resilience”
 
-## Front door microservice
-
-- Cung cấp API Gateway để tương tác REST bên ngoài  
-- Xác thực & ủy quyền dựa trên **OIDC** thông qua **Amazon Cognito**  
-- Cơ chế *deduplication* tự quản lý bằng DynamoDB thay vì SNS FIFO vì:
-  1. SNS deduplication TTL chỉ 5 phút
-  2. SNS FIFO yêu cầu SQS FIFO
-  3. Chủ động báo cho sender biết message là bản sao
+Những tài liệu này đã đặt nền móng về kỳ vọng đối với các tổ chức tài chính trong việc quản trị rủi ro thuê ngoài, quản lý bên thứ ba và đảm bảo khả năng vận hành bền vững.
 
 ---
 
-## Staging ER7 microservice
+## Cam kết của AWS
 
-- Lambda “trigger” đăng ký với pub/sub hub, lọc message theo attribute  
-- Step Functions Express Workflow để chuyển ER7 → JSON  
-- Hai Lambda:
-  1. Sửa format ER7 (newline, carriage return)
-  2. Parsing logic  
-- Kết quả hoặc lỗi được đẩy lại vào pub/sub hub
+Chế độ CTP của Anh được thiết kế theo hướng **dựa trên kết quả (outcomes-based)**, cho phép các CTP linh hoạt trong cách tuân thủ.
+
+AWS ủng hộ mạnh mẽ mục tiêu của cơ quan quản lý trong việc bảo vệ sự ổn định của hệ thống tài chính. Chúng tôi tiếp tục hợp tác với cơ quan quản lý, chia sẻ thông tin và chuẩn bị đầy đủ để tuân thủ chế độ này.
+
+AWS cũng cung cấp nhiều dịch vụ giúp tổ chức tài chính:
+
+- nâng cao khả năng vận hành bền vững (operational resilience)  
+- quản lý sự cố trong môi trường cloud hoặc hybrid  
+- tiếp cận hướng dẫn chi tiết từ **AWS Well-Architected Framework**
 
 ---
 
-## Tính năng mới trong giải pháp
+## Tác động đối với khách hàng
 
-### 1. AWS CloudFormation cross-stack references
-Ví dụ *outputs* trong core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn
+Cơ quan quản lý Anh đã khẳng định:
+
+- Chế độ CTP **không loại bỏ hoặc giảm nhẹ trách nhiệm** của các tổ chức tài chính.  
+- Chế độ **không tạo nghĩa vụ trực tiếp** lên khách hàng của AWS.  
+
+Tuy nhiên, khách hàng — đặc biệt là các tổ chức tài chính — sẽ cần:
+
+- Cung cấp thông tin đầy đủ về việc sử dụng dịch vụ bên thứ ba để hỗ trợ cơ quan quản lý xác định CTP và STPS  
+- Rà soát lại các quy trình quản trị rủi ro và thẩm định (due diligence)  
+- Cập nhật theo thông tin bổ sung từ các CTP theo yêu cầu mới
+
+AWS dự kiến sẽ hỗ trợ cung cấp tài liệu, thông tin và hướng dẫn cần thiết để khách hàng đáp ứng các yêu cầu này.
+
+---
+
+## Liên hệ và hỗ trợ
+
+Nếu bạn có bất kỳ câu hỏi nào liên quan đến:
+
+- chế độ CTP của Anh  
+- khả năng vận hành bền vững  
+- quản lý sự cố  
+
+hãy liên hệ đội ngũ phụ trách tài khoản AWS.
+
+Chúng tôi có đội ngũ chuyên gia về quy định tài chính luôn sẵn sàng hỗ trợ khách hàng điều hướng môi trường quy định ngày càng phức tạp.
+
+---
+
+## Tác giả
+
+**Michael Jefferson**  
+Trưởng Bộ phận Chính sách Công – Dịch vụ Tài chính tại AWS (UK, Middle East, Africa, Switzerland).  
+Ông có kinh nghiệm sâu rộng trong lĩnh vực chính sách tài chính, ngân hàng và đầu tư, từng đảm nhiệm vai trò lãnh đạo tại Investment Association, UK Finance, Nomura và Chính phủ Anh.
+
+**Arvind Kannan**  
+Principal Compliance Specialist tại AWS London.  
+Ông tập trung hỗ trợ khách hàng tài chính ở khu vực EMEA về quản trị rủi ro, tuân thủ và khả năng vận hành bền vững, đồng thời giúp họ hiểu rõ yêu cầu từ cơ quan quản lý.

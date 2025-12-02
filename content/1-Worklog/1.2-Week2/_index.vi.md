@@ -12,6 +12,10 @@ pre: " <b> 1.2. </b> "
 
 * Kết nối, làm quen với các thành viên trong First Cloud Journey.
 * Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
+* Học hết Module 01 của First Cloud Journey.
+* Hiểu rõ phần cơ bản về cloud, AWS và cách quản lý tài khoản.
+* Làm quen với phần tối ưu chi phí và AWS Support.
+* Hoàn thành toàn bộ các lab của Module 01.
 
 ### Các công việc cần triển khai trong tuần này:
 | Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
@@ -25,33 +29,9 @@ pre: " <b> 1.2. </b> "
 
 ### Kết quả đạt được tuần 2:
 
-* Hiểu AWS là gì và nắm được các nhóm dịch vụ cơ bản: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
-
-* Đã tạo và cấu hình AWS Free Tier account thành công.
-
-* Làm quen với AWS Management Console và biết cách tìm, truy cập, sử dụng dịch vụ từ giao diện web.
-
-* Cài đặt và cấu hình AWS CLI trên máy tính bao gồm:
-  * Access Key
-  * Secret Key
-  * Region mặc định
-  * ...
-
-* Sử dụng AWS CLI để thực hiện các thao tác cơ bản như:
-
-  * Kiểm tra thông tin tài khoản & cấu hình
-  * Lấy danh sách region
-  * Xem dịch vụ EC2
-  * Tạo và quản lý key pair
-  * Kiểm tra thông tin dịch vụ đang chạy
-  * ...
-
-* Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
-* ...
-
-
+* Hiểu rõ cloud hoạt động thế nào và AWS khác gì so với cách làm truyền thống.
+* Hoàn thành toàn bộ lab tài khoản: tạo user, tạo group admin, bật MFA, quản lý xác thực.
+* Biết phân biệt các gói support của AWS và biết cách mở ticket.
+* Tóm lại: đã hoàn thành toàn bộ Module 01, nắm chắc phần cơ bản để sang phần Networking tuần sau.  
+* Biết xem hạ tầng AWS gồm những gì và cách tìm dịch vụ nhanh trên Console.
+* Làm quen phần quản lý chi phí, tự tạo được cost budget, usage budget và thử tạo Savings Plans budget.

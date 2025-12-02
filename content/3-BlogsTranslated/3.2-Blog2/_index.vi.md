@@ -1,125 +1,61 @@
 ---
 title: "Blog 2"
-
-weight: 1
+weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
 
+# Báo Cáo SOC 1 Mùa Đông 2024 Đã Có Sẵn Với 183 Dịch Vụ Trong Phạm Vi
 
+*Viết bởi Paul Hong, Gabby Iem, Michael Murphy, Nathan Samuel, Tushar Jain và Ryan Wilks — Ngày 26 tháng 3 năm 2025*
 
-# Bắt đầu với healthcare data lakes: Sử dụng microservices
+AWS vui mừng thông báo rằng **Báo cáo System and Organization Controls (SOC) 1 – Mùa Đông 2024** đã chính thức được phát hành. Báo cáo năm nay bao gồm **183 dịch vụ AWS**, được đánh giá trong suốt 12 tháng từ **1/1/2024 đến 31/12/2024**, mang đến cho khách hàng sự đảm bảo toàn diện và liên tục quanh năm.  
+Điều này thể hiện cam kết của AWS trong việc đáp ứng những kỳ vọng ngày càng tăng đối với tính minh bạch và đảm bảo của nhà cung cấp dịch vụ đám mây.
 
-Các data lake có thể giúp các bệnh viện và cơ sở y tế chuyển dữ liệu thành những thông tin chi tiết về doanh nghiệp và duy trì hoạt động kinh doanh liên tục, đồng thời bảo vệ quyền riêng tư của bệnh nhân. **Data lake** là một kho lưu trữ tập trung, được quản lý và bảo mật để lưu trữ tất cả dữ liệu của bạn, cả ở dạng ban đầu và đã xử lý để phân tích. data lake cho phép bạn chia nhỏ các kho chứa dữ liệu và kết hợp các loại phân tích khác nhau để có được thông tin chi tiết và đưa ra các quyết định kinh doanh tốt hơn.
+Khách hàng có thể tải **Báo cáo SOC 1 Mùa Đông 2024** thông qua **AWS Artifact**, cổng truy cập tự phục vụ dành cho các báo cáo tuân thủ AWS. Chỉ cần đăng nhập vào **AWS Artifact trong AWS Management Console**, hoặc tìm hiểu thêm tại trang **Getting Started with AWS Artifact**.
 
-Bài đăng trên blog này là một phần của loạt bài lớn hơn về việc bắt đầu cài đặt data lake dành cho lĩnh vực y tế. Trong bài đăng blog cuối cùng của tôi trong loạt bài, *“Bắt đầu với data lake dành cho lĩnh vực y tế: Đào sâu vào Amazon Cognito”*, tôi tập trung vào các chi tiết cụ thể của việc sử dụng Amazon Cognito và Attribute Based Access Control (ABAC) để xác thực và ủy quyền người dùng trong giải pháp data lake y tế. Trong blog này, tôi trình bày chi tiết cách giải pháp đã phát triển ở cấp độ cơ bản, bao gồm các quyết định thiết kế mà tôi đã đưa ra và các tính năng bổ sung được sử dụng. Bạn có thể truy cập các code samples cho giải pháp tại Git repo này để tham khảo.
+AWS tiếp tục mở rộng phạm vi chương trình tuân thủ để giúp khách hàng đáp ứng các yêu cầu pháp lý và kiến trúc đặc thù của từng ngành. Nếu bạn có câu hỏi hoặc phản hồi liên quan đến tuân thủ SOC, vui lòng liên hệ đội ngũ tài khoản AWS của bạn.
 
----
-
-## Hướng dẫn kiến trúc
-
-Thay đổi chính kể từ lần trình bày cuối cùng của kiến trúc tổng thể là việc tách dịch vụ đơn lẻ thành một tập hợp các dịch vụ nhỏ để cải thiện khả năng bảo trì và tính linh hoạt. Việc tích hợp một lượng lớn dữ liệu y tế khác nhau thường yêu cầu các trình kết nối chuyên biệt cho từng định dạng; bằng cách giữ chúng được đóng gói riêng biệt với microservices, chúng ta có thể thêm, xóa và sửa đổi từng trình kết nối mà không ảnh hưởng đến những kết nối khác. Các microservices được kết nối rời thông qua tin nhắn publish/subscribe tập trung trong cái mà tôi gọi là “pub/sub hub”.
-
-Giải pháp này đại diện cho những gì tôi sẽ coi là một lần lặp nước rút hợp lý khác từ last post của tôi. Phạm vi vẫn được giới hạn trong việc nhập và phân tích cú pháp đơn giản của các **HL7v2 messages** được định dạng theo **Quy tắc mã hóa 7 (ER7)** thông qua giao diện REST.
-
-**Kiến trúc giải pháp bây giờ như sau:**
-
-> *Hình 1. Kiến trúc tổng thể; những ô màu thể hiện những dịch vụ riêng biệt.*
+Để khám phá thêm về chương trình bảo mật và tuân thủ của AWS, hãy truy cập **AWS Compliance Programs**. Chúng tôi luôn sẵn sàng lắng nghe câu hỏi và phản hồi của bạn — hãy liên hệ **AWS Compliance team** qua trang **Contact Us**.
 
 ---
 
-Mặc dù thuật ngữ *microservices* có một số sự mơ hồ cố hữu, một số đặc điểm là chung:  
-- Chúng nhỏ, tự chủ, kết hợp rời rạc  
-- Có thể tái sử dụng, giao tiếp thông qua giao diện được xác định rõ  
-- Chuyên biệt để giải quyết một việc  
-- Thường được triển khai trong **event-driven architecture**
+## Về các Tác Giả
 
-Khi xác định vị trí tạo ranh giới giữa các microservices, cần cân nhắc:  
-- **Nội tại**: công nghệ được sử dụng, hiệu suất, độ tin cậy, khả năng mở rộng  
-- **Bên ngoài**: chức năng phụ thuộc, tần suất thay đổi, khả năng tái sử dụng  
-- **Con người**: quyền sở hữu nhóm, quản lý *cognitive load*
+### **Paul Hong**
+Paul Hong là Quản lý Chương trình Tuân thủ tại AWS, phụ trách nhiều sáng kiến trong bảo mật, tuân thủ và đào tạo. Anh có hơn 12 năm kinh nghiệm trong lĩnh vực đảm bảo an ninh thông tin.  
+Paul sở hữu các chứng chỉ CISSP, CEH và CPA, đồng thời có bằng Thạc sĩ Hệ thống Thông tin Kế toán và Cử nhân Quản trị Kinh doanh từ Đại học James Madison (Virginia, Mỹ).
 
 ---
 
-## Lựa chọn công nghệ và phạm vi giao tiếp
-
-| Phạm vi giao tiếp                        | Các công nghệ / mô hình cần xem xét                                                        |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Trong một microservice                   | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Giữa các microservices trong một dịch vụ | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Giữa các dịch vụ                         | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
+### **Tushar Jain**
+Tushar Jain là Quản lý Chương trình Tuân thủ tại AWS, dẫn dắt nhiều sáng kiến về bảo mật và quyền riêng tư.  
+Anh có bằng MBA từ Học viện Quản lý Ấn Độ Shillong và bằng Kỹ sư Điện tử & Viễn thông từ Đại học Marathwada.  
+Với hơn 12 năm kinh nghiệm trong an ninh thông tin, Tushar sở hữu các chứng chỉ CCSK và CSXF.
 
 ---
 
-## The pub/sub hub
-
-Việc sử dụng kiến trúc **hub-and-spoke** (hay message broker) hoạt động tốt với một số lượng nhỏ các microservices liên quan chặt chẽ.  
-- Mỗi microservice chỉ phụ thuộc vào *hub*  
-- Kết nối giữa các microservice chỉ giới hạn ở nội dung của message được xuất  
-- Giảm số lượng synchronous calls vì pub/sub là *push* không đồng bộ một chiều
-
-Nhược điểm: cần **phối hợp và giám sát** để tránh microservice xử lý nhầm message.
+### **Michael Murphy**
+Michael Murphy là Quản lý Chương trình Tuân thủ tại AWS, nơi anh dẫn dắt nhiều sáng kiến về bảo mật và bảo vệ dữ liệu.  
+Anh có 12 năm kinh nghiệm trong an ninh thông tin và sở hữu bằng Thạc sĩ lẫn Cử nhân ngành Kỹ thuật Máy tính từ Stevens Institute of Technology.  
+Michael cũng có nhiều chứng chỉ uy tín như CISSP, CRISC, CISA và CISM.
 
 ---
 
-## Core microservice
-
-Cung cấp dữ liệu nền tảng và lớp truyền thông, gồm:  
-- **Amazon S3** bucket cho dữ liệu  
-- **Amazon DynamoDB** cho danh mục dữ liệu  
-- **AWS Lambda** để ghi message vào data lake và danh mục  
-- **Amazon SNS** topic làm *hub*  
-- **Amazon S3** bucket cho artifacts như mã Lambda
-
-> Chỉ cho phép truy cập ghi gián tiếp vào data lake qua hàm Lambda → đảm bảo nhất quán.
+### **Nathan Samuel**
+Nathan Samuel là Quản lý Chương trình Tuân thủ tại AWS, phụ trách nhiều chương trình bảo mật và quyền riêng tư trên toàn cầu.  
+Anh có bằng Cử nhân Thương mại từ Đại học Witwatersrand (Nam Phi) và sở hữu hơn 21 năm kinh nghiệm trong đảm bảo an ninh.  
+Các chứng chỉ của Nathan bao gồm CISA, CRISC, CGEIT, CISM, CDPSE và Certified Internal Auditor.
 
 ---
 
-## Front door microservice
-
-- Cung cấp API Gateway để tương tác REST bên ngoài  
-- Xác thực & ủy quyền dựa trên **OIDC** thông qua **Amazon Cognito**  
-- Cơ chế *deduplication* tự quản lý bằng DynamoDB thay vì SNS FIFO vì:
-  1. SNS deduplication TTL chỉ 5 phút
-  2. SNS FIFO yêu cầu SQS FIFO
-  3. Chủ động báo cho sender biết message là bản sao
+### **Ryan Wilks**
+Ryan Wilks là Quản lý Chương trình Tuân thủ tại AWS, dẫn dắt các dự án trong lĩnh vực bảo mật và quyền riêng tư.  
+Anh có hơn 13 năm kinh nghiệm trong an ninh thông tin, có bằng Cử nhân Nghệ thuật từ Đại học Rutgers, và sở hữu các chứng chỉ như ITIL, CISM và CISA.
 
 ---
 
-## Staging ER7 microservice
+### **Gabby Iem**
+Gabby Iem là Quản lý Chương trình tại AWS, hỗ trợ nhiều sáng kiến đảm bảo an ninh.  
+Cô vừa tốt nghiệp Cử nhân Quản trị Kinh doanh từ Đại học Chapman và hiện đang tham gia vào các chương trình phát triển năng lực bảo mật và tuân thủ tại AWS.
 
-- Lambda “trigger” đăng ký với pub/sub hub, lọc message theo attribute  
-- Step Functions Express Workflow để chuyển ER7 → JSON  
-- Hai Lambda:
-  1. Sửa format ER7 (newline, carriage return)
-  2. Parsing logic  
-- Kết quả hoặc lỗi được đẩy lại vào pub/sub hub
-
----
-
-## Tính năng mới trong giải pháp
-
-### 1. AWS CloudFormation cross-stack references
-Ví dụ *outputs* trong core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn

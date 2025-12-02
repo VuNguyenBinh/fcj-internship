@@ -1,124 +1,62 @@
 ---
 title: "Blog 2"
-
-weight: 1
+weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
 
+# Winter 2024 SOC 1 Report Now Available with 183 Services in Scope
 
-# Getting Started with Healthcare Data Lakes: Using Microservices
+*Written by Paul Hong, Gabby Iem, Michael Murphy, Nathan Samuel, Tushar Jain, and Ryan Wilks — March 26, 2025*
 
-Data lakes can help hospitals and healthcare facilities turn data into business insights, maintain business continuity, and protect patient privacy. A **data lake** is a centralized, managed, and secure repository to store all your data, both in its raw and processed forms for analysis. Data lakes allow you to break down data silos and combine different types of analytics to gain insights and make better business decisions.
+AWS is pleased to announce that the **System and Organization Controls (SOC) 1 – Winter 2024 Report** is now officially available. This year’s report covers **183 AWS services**, assessed over a full 12-month period from **January 1, 2024 through December 31, 2024**, providing customers with comprehensive, year-round assurance.  
+This reflects AWS’s ongoing commitment to meeting the evolving expectations for cloud service provider assurance and transparency.
 
-This blog post is part of a larger series on getting started with setting up a healthcare data lake. In my final post of the series, *“Getting Started with Healthcare Data Lakes: Diving into Amazon Cognito”*, I focused on the specifics of using Amazon Cognito and Attribute Based Access Control (ABAC) to authenticate and authorize users in the healthcare data lake solution. In this blog, I detail how the solution evolved at a foundational level, including the design decisions I made and the additional features used. You can access the code samples for the solution in this Git repo for reference.
+Customers can download the **Winter 2024 SOC 1 Report** through **AWS Artifact**, the self-service portal for accessing AWS compliance reports anytime. Simply sign in to **AWS Artifact in the AWS Management Console**, or learn more on the **Getting Started with AWS Artifact** page.
 
----
+AWS continues to expand the scope of its compliance programs to help customers meet industry-specific regulatory and architectural requirements. If you have questions or feedback related to SOC compliance, please contact your AWS account team.
 
-## Architecture Guidance
-
-The main change since the last presentation of the overall architecture is the decomposition of a single service into a set of smaller services to improve maintainability and flexibility. Integrating a large volume of diverse healthcare data often requires specialized connectors for each format; by keeping them encapsulated separately as microservices, we can add, remove, and modify each connector without affecting the others. The microservices are loosely coupled via publish/subscribe messaging centered in what I call the “pub/sub hub.”
-
-This solution represents what I would consider another reasonable sprint iteration from my last post. The scope is still limited to the ingestion and basic parsing of **HL7v2 messages** formatted in **Encoding Rules 7 (ER7)** through a REST interface.
-
-**The solution architecture is now as follows:**
-
-> *Figure 1. Overall architecture; colored boxes represent distinct services.*
+To explore more about AWS security and compliance programs, visit **AWS Compliance Programs**. As always, we welcome your questions and feedback — feel free to reach out to the **AWS Compliance team** via the **Contact Us** page.
 
 ---
 
-While the term *microservices* has some inherent ambiguity, certain traits are common:  
-- Small, autonomous, loosely coupled  
-- Reusable, communicating through well-defined interfaces  
-- Specialized to do one thing well  
-- Often implemented in an **event-driven architecture**
+## About the Authors
 
-When determining where to draw boundaries between microservices, consider:  
-- **Intrinsic**: technology used, performance, reliability, scalability  
-- **Extrinsic**: dependent functionality, rate of change, reusability  
-- **Human**: team ownership, managing *cognitive load*
+### **Paul Hong**
+Paul Hong is a Compliance Program Manager at AWS, overseeing multiple initiatives across security, compliance, and training. He has over 12 years of experience in security assurance.  
+Paul holds CISSP, CEH, and CPA certifications and earned a Master’s in Accounting Information Systems and a Bachelor’s in Business Administration from James Madison University in Virginia, USA.
 
 ---
 
-## Technology Choices and Communication Scope
-
-| Communication scope                       | Technologies / patterns to consider                                                        |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Within a single microservice              | Amazon Simple Queue Service (Amazon SQS), AWS Step Functions                               |
-| Between microservices in a single service | AWS CloudFormation cross-stack references, Amazon Simple Notification Service (Amazon SNS) |
-| Between services                          | Amazon EventBridge, AWS Cloud Map, Amazon API Gateway                                      |
+### **Tushar Jain**
+Tushar Jain is a Compliance Program Manager at AWS, leading key initiatives in security and privacy.  
+He holds an MBA from the Indian Institute of Management Shillong and a Bachelor’s in Electronics & Telecommunications Engineering from Marathwada University.  
+With more than 12 years of experience in information security, he holds the CCSK and CSXF certifications.
 
 ---
 
-## The Pub/Sub Hub
-
-Using a **hub-and-spoke** architecture (or message broker) works well with a small number of tightly related microservices.  
-- Each microservice depends only on the *hub*  
-- Inter-microservice connections are limited to the contents of the published message  
-- Reduces the number of synchronous calls since pub/sub is a one-way asynchronous *push*
-
-Drawback: **coordination and monitoring** are needed to avoid microservices processing the wrong message.
+### **Michael Murphy**
+Michael Murphy serves as a Compliance Program Manager at AWS, where he leads various security and data-protection initiatives.  
+He has 12 years of information security experience and holds both a Master’s and Bachelor’s degree in Computer Engineering from Stevens Institute of Technology.  
+Michael also maintains multiple industry certifications, including CISSP, CRISC, CISA, and CISM.
 
 ---
 
-## Core Microservice
-
-Provides foundational data and communication layer, including:  
-- **Amazon S3** bucket for data  
-- **Amazon DynamoDB** for data catalog  
-- **AWS Lambda** to write messages into the data lake and catalog  
-- **Amazon SNS** topic as the *hub*  
-- **Amazon S3** bucket for artifacts such as Lambda code
-
-> Only allow indirect write access to the data lake through a Lambda function → ensures consistency.
+### **Nathan Samuel**
+Nathan Samuel is a Compliance Program Manager at AWS, responsible for several global security and privacy programs.  
+He holds a Bachelor of Commerce from the University of the Witwatersrand in South Africa and brings over 21 years of experience in security assurance.  
+Nathan’s certifications include CISA, CRISC, CGEIT, CISM, CDPSE, and Certified Internal Auditor.
 
 ---
 
-## Front Door Microservice
-
-- Provides an API Gateway for external REST interaction  
-- Authentication & authorization based on **OIDC** via **Amazon Cognito**  
-- Self-managed *deduplication* mechanism using DynamoDB instead of SNS FIFO because:  
-  1. SNS deduplication TTL is only 5 minutes  
-  2. SNS FIFO requires SQS FIFO  
-  3. Ability to proactively notify the sender that the message is a duplicate  
+### **Ryan Wilks**
+Ryan Wilks is a Compliance Program Manager at AWS, leading projects across security and privacy domains.  
+He has over 13 years of information security experience, holds a Bachelor of Arts from Rutgers University, and maintains certifications including ITIL, CISM, and CISA.
 
 ---
 
-## Staging ER7 Microservice
-
-- Lambda “trigger” subscribed to the pub/sub hub, filtering messages by attribute  
-- Step Functions Express Workflow to convert ER7 → JSON  
-- Two Lambdas:  
-  1. Fix ER7 formatting (newline, carriage return)  
-  2. Parsing logic  
-- Result or error is pushed back into the pub/sub hub  
+### **Gabby Iem**
+Gabby Iem is a Program Manager at AWS supporting various security assurance initiatives.  
+She recently graduated with a Bachelor’s degree in Business Administration from Chapman University and is actively engaged in security and compliance capability-building programs at AWS.
 
 ---
-
-## New Features in the Solution
-
-### 1. AWS CloudFormation Cross-Stack References
-Example *outputs* in the core microservice:
-```yaml
-Outputs:
-  Bucket:
-    Value: !Ref Bucket
-    Export:
-      Name: !Sub ${AWS::StackName}-Bucket
-  ArtifactBucket:
-    Value: !Ref ArtifactBucket
-    Export:
-      Name: !Sub ${AWS::StackName}-ArtifactBucket
-  Topic:
-    Value: !Ref Topic
-    Export:
-      Name: !Sub ${AWS::StackName}-Topic
-  Catalog:
-    Value: !Ref Catalog
-    Export:
-      Name: !Sub ${AWS::StackName}-Catalog
-  CatalogArn:
-    Value: !GetAtt Catalog.Arn
-    Export:
-      Name: !Sub ${AWS::StackName}-CatalogArn
