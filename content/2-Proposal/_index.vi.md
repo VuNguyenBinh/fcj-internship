@@ -87,7 +87,8 @@ The organization follows AWS Well-Architected and Security best practices.
 The proposed solution integrates multiple AWS services for CI/CD, automated security analysis, and monitoring.
 It includes components for source control (GitLab), build and test automation (CodeBuild), pipeline orchestration (CodePipeline), AI-based code review (CodeGuru Reviewer), and centralized alerting (Security Hub + SNS).
 
-(Insert Diagram: /images/2-Proposal/Security Scan project AWS.drawio.png)
+![Technical Architecture](/images/2-Proposal/architecture.png)
+
 
 #### Tools used: 
 
