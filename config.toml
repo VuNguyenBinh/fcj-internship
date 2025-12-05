@@ -1,4 +1,4 @@
-baseURL = "hhttps://github.com/VuNguyenBinh/aws-intern-report"
+baseURL = "http://github.com/VuNguyenBinh/aws-intern-report"
 publishDir="public"
 relativeURLs = true
 canonifyURLs = true
@@ -26,7 +26,9 @@ home = [ "HTML", "RSS", "JSON"]
 title = "Internship Report"
 weight = 1
 languageName = "English"
-
+[languages.vi]
+  languageName = "Tiếng Việt"
+  weight = 2
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fab fa-facebook'></i> AWS Study Group"
 identifier = "AWS Study Group FB"

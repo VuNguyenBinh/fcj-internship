@@ -21,7 +21,7 @@ chapter: false
 
 &emsp; **Major:** Information Assurance
 
-&emsp; **Class:** AWS082025
+&emsp; **Class:** AWS092025
 
 &emsp; **Internship Company:** Amazon Web Services Vietnam Co., Ltd.
 
