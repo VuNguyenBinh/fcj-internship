@@ -27,13 +27,13 @@ home = [ "HTML", "RSS", "JSON"]
   title = "Internship Report"
   weight = 1
   languageName = "English"
-  contentDir = "content"
+  
 
   [languages.vi]
   title = "Internship Report"
   languageName = "Tiếng Việt"
   weight = 2
-  contentDir = "content"
+  
   
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fab fa-facebook'></i> AWS Study Group"
