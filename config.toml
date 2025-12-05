@@ -2,9 +2,7 @@ baseURL = "http://github.com/VuNguyenBinh/aws-intern-report"
 publishDir="public"
 relativeURLs = true
 canonifyURLs = true
-defaultContentLanguage = "en"
-defaultContentLanguageInSubdir = true
-enableMissingTranslationPlaceholders = true
+
 
 # Change the default theme to be use when building the site with Hugo
 theme = "hugo-theme-learn"
