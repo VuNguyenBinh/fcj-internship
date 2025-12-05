@@ -2,6 +2,9 @@ baseURL = "http://github.com/VuNguyenBinh/aws-intern-report"
 publishDir="public"
 relativeURLs = true
 canonifyURLs = true
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = true
+enableMissingTranslationPlaceholders = true
 
 # Change the default theme to be use when building the site with Hugo
 theme = "hugo-theme-learn"
@@ -22,13 +25,18 @@ home = [ "HTML", "RSS", "JSON"]
   disableNextPrev = false
   
 [Languages]
-[Languages.en]
-title = "Internship Report"
-weight = 1
-languageName = "English"
-[languages.vi]
+  [Languages.en]
+  title = "Internship Report"
+  weight = 1
+  languageName = "English"
+  contentDir = "content"
+
+  [languages.vi]
+  title = "Internship Report"
   languageName = "Tiếng Việt"
   weight = 2
+  contentDir = "content"
+  
 [[Languages.en.menu.shortcuts]]
 name = "<i class='fab fa-facebook'></i> AWS Study Group"
 identifier = "AWS Study Group FB"
