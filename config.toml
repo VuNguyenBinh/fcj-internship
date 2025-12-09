@@ -29,10 +29,7 @@ home = [ "HTML", "RSS", "JSON"]
   languageName = "English"
   
 
-  [languages.vi]
-  title = "Internship Report"
-  languageName = "Tiếng Việt"
-  weight = 2
+  
   
   
 [[Languages.en.menu.shortcuts]]

@@ -1,37 +1,23 @@
 ---
-title: "Worklog Tuần 2"
-
-weight: 1
+title: "Week 2 Worklog"
+weight: 2
 chapter: false
 pre: " <b> 1.2. </b> "
 ---
 
-
-
 ### Mục tiêu tuần 2:
+* Nắm vững Networking cơ bản trên AWS: VPC, Subnet, Route Table, IGW, SG, NACL.
 
-* Kết nối, làm quen với các thành viên trong First Cloud Journey.
-* Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
-* Học hết Module 01 của First Cloud Journey.
-* Hiểu rõ phần cơ bản về cloud, AWS và cách quản lý tài khoản.
-* Làm quen với phần tối ưu chi phí và AWS Support.
-* Hoàn thành toàn bộ các lab của Module 01.
+### Nhiệm vụ:
+| Day | Task | Start | End | Ref |
+| --- | ----- | ------ | ------ | --- |
+| 1 | Tìm hiểu VPC, Subnet | 15/09/2025 | 15/09/2025 | Cloud Journey |
+| 2 | Tìm hiểu Route Table, Internet Gateway | 16/09/2025 | 16/09/2025 | AWS Docs |
+| 3 | Security Group vs NACL | 17/09/2025 | 17/09/2025 | Cloud Journey |
+| 4 | **Thực hành:** Tạo VPC thủ công | 18/09/2025 | 18/09/2025 | AWS Console |
+| 5 | **Thực hành:** Tạo 2 subnet, cấu hình route, SG, NACL | 19/09/2025 | 19/09/2025 | AWS Console |
 
-### Các công việc cần triển khai trong tuần này:
-| Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 15/09/2025   | 19/09/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 15/09/2025   | 19/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 15/09/2025   | 19/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 15/09/2025   | 19/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 15/09/2025   | 19/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-
-
-### Kết quả đạt được tuần 2:
-
-* Hiểu rõ cloud hoạt động thế nào và AWS khác gì so với cách làm truyền thống.
-* Hoàn thành toàn bộ lab tài khoản: tạo user, tạo group admin, bật MFA, quản lý xác thực.
-* Biết phân biệt các gói support của AWS và biết cách mở ticket.
-* Tóm lại: đã hoàn thành toàn bộ Module 01, nắm chắc phần cơ bản để sang phần Networking tuần sau.  
-* Biết xem hạ tầng AWS gồm những gì và cách tìm dịch vụ nhanh trên Console.
-* Làm quen phần quản lý chi phí, tự tạo được cost budget, usage budget và thử tạo Savings Plans budget.
+### Thành tựu:
+* Hiểu kiến trúc mạng trong AWS.
+* Tự xây dựng VPC đầy đủ thành phần.
+* Biết phân biệt và cấu hình SG & NACL.

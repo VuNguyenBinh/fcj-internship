@@ -1,33 +1,22 @@
 ---
-title: "Worklog Tuần 3"
-
-weight: 1
+title: "Week 3 Worklog"
+weight: 3
 chapter: false
 pre: " <b> 1.3. </b> "
 ---
 
-
-
 ### Mục tiêu tuần 3:
+* Học về S3, Glacier, Lifecycle, Versioning, Encryption.
 
-* Bắt đầu Module 02 – phần Networking.
-* Hiểu khái niệm VPC, subnet, route table, IGW, NAT Gateway.
-* Biết sự khác nhau giữa Security Group và NACL.
-* Làm các lab VPC cơ bản.
+### Nhiệm vụ:
+| Day | Task | Start | End | Ref |
+| --- | ----- | ------ | ------ | --- |
+| 1 | Tìm hiểu S3 cơ bản | 22/09/2025 | 22/09/2025 | Cloud Journey |
+| 2 | Encryption (SSE-S3, SSE-KMS) | 23/09/2025 | 23/09/2025 | AWS Docs |
+| 3 | Versioning + MFA Delete | 24/09/2025 | 24/09/2025 | AWS Docs |
+| 4 | Lifecycle, Glacier | 25/09/2025 | 25/09/2025 | AWS Docs |
+| 5 | **Thực hành:** Tạo bucket, bật versioning, lifecycle | 26/09/2025 | 26/09/2025 | AWS Console |
 
-### Các công việc cần triển khai trong tuần này:
-| Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 22/09/2025   | 26/09/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 22/09/2025   | 26/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 22/09/2025   | 26/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 22/09/2025   | 26/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 22/09/2025   | 26/09/2025      | <https://cloudjourney.awsstudygroup.com/> |
-
-
-### Kết quả đạt được tuần 3:
-* Tự tạo được VPC, subnet, route table, gán IGW và NAT.
-* Hiểu rõ Security Group và NACL khác nhau thế nào.
-* Nắm được các thành phần cơ bản của VPC.
-* Làm xong toàn bộ phần lab cơ bản của Module 02.
-
+### Thành tựu:
+* Thành thạo thao tác S3 và các tính năng nâng cao.
+* Áp dụng chính sách bảo mật & vòng đời dữ liệu.

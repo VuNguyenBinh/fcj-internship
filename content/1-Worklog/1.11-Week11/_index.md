@@ -1,31 +1,22 @@
 ---
 title: "Week 11 Worklog"
-
-weight: 2
+weight: 11
 chapter: false
 pre: " <b> 1.11. </b> "
 ---
 
-
-
 ### Week 11 Objectives:
+* Learn CI/CD using CodeCommit, CodeBuild, CodeDeploy, CodePipeline.
 
-* Learn CloudShell, SDK usage, and Cloud9.
-* Practice ETL with Glue & DataBrew.
-* Work on end-to-end data pipeline (Lab72).
+### Tasks:
+| Day | Task | Start | End | Ref |
+| --- | ----- | ------ | ------ | --- |
+| 1 | Learn CodeCommit basics | 17/11/2025 | 17/11/2025 | AWS Docs |
+| 2 | CodeBuild pipelines | 18/11/2025 | 18/11/2025 | Cloud Journey |
+| 3 | CodeDeploy deployment groups | 19/11/2025 | 19/11/2025 | AWS Docs |
+| 4 | **Practice:** Build CI/CD pipeline | 20/11/2025 | 20/11/2025 | AWS Console |
+| 5 | Automate deployment for EC2 or ECS | 21/11/2025 | 21/11/2025 | AWS Console |
 
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 11/17/2025 | 11/21/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 11/17/2025 | 11/21/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 11/17/2025 | 11/21/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 11/17/2025 | 11/21/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 11/17/2025 | 11/21/2025      | <https://cloudjourney.awsstudygroup.com/> |
-
-
-### Week 11 Achievements:
-
-* Used CloudShell and Cloud9 for development.
-* Practiced data cleaning with DataBrew.
-* Built a multi-step pipeline using Glue, EMR, and Athena.
+### Achievements:
+* Built automated deployment pipeline.
+* Understood CI/CD workflow on AWS.

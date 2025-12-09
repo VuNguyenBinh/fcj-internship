@@ -1,34 +1,22 @@
 ---
 title: "Week 8 Worklog"
-
-weight: 1
+weight: 8
 chapter: false
 pre: " <b> 1.8. </b> "
 ---
 
-
-
 ### Week 8 Objectives:
+* Learn SQS, SNS, EventBridge, and decoupled system design.
 
-* Understand AWS security fundamentals.
-* Practice IAM: users, roles, policies.
-* Work with Organizations, Identity Center, and KMS.
-* Complete major security labs.
+### Tasks:
+| Day | Task | Start | End | Ref |
+| --- | ----- | ------ | ------ | --- |
+| 1 | Learn SQS queues (Standard vs FIFO) | 27/10/2025 | 27/10/2025 | AWS Docs |
+| 2 | SNS notifications | 28/10/2025 | 28/10/2025 | Cloud Journey |
+| 3 | EventBridge basics | 29/10/2025 | 29/10/2025 | AWS Docs |
+| 4 | **Practice:** Build SQS → Lambda → SNS flow | 30/10/2025 | 30/10/2025 | AWS Console |
+| 5 | Use EventBridge rules for automation | 31/10/2025 | 31/10/2025 | AWS Console |
 
-
-### Tasks to be carried out this week:
-| Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 10/27/2025 | 10/31/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 10/27/2025 | 10/31/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 10/27/2025 | 10/31/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 10/27/2025 | 10/31/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Midterm test:** <br>&emsp; + Midterm test <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 31/10/2025 | 10/31/2025      | <https://cloudjourney.awsstudygroup.com/> |
-
-
-### Week 8 Achievements:
-
-* Know how AWS security model works.
-* Created users, roles, and policies.
-* Used KMS for encryption.
-* Completed the main security labs.
+### Achievements:
+* Understood event-driven architecture.
+* Built message queue workflows.
