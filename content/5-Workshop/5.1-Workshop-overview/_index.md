@@ -7,8 +7,9 @@ pre : " <b> 5.1. </b> "
 ---
 
 #### VPC endpoints
-+ **VPC endpoints** are virtual devices. They are horizontally scaled, redundant, and highly available VPC components. They allow communication between your compute resources and AWS services without imposing availability risks.
-+ Compute resources running in VPC can access  **Amazon S3**  using a Gateway endpoint. PrivateLink interface endpoints can be used by compute resources running in VPC or on-premises.
++ **VPC endpoints** are virtual components within a VPC that are designed to scale horizontally, provide redundancy, and maintain high availability. They enable your compute resources to connect to AWS services without introducing additional availability concerns.
+
+In a VPC, compute resources can reach Amazon S3 through a Gateway Endpoint, while PrivateLink interface endpoints allow access from both VPC-based and on-premises compute environments.
 
 #### Workshop overview
 In this workshop, you will use two VPCs. 
